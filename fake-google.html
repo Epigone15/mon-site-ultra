@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Google</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Faux Google --- */
+    .center {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 4.5rem;
+      font-weight: bold;
+      letter-spacing: -2px;
+      user-select: none;
+    }
+
+    .logo span:nth-child(1) { color: #4285F4; }
+    .logo span:nth-child(2) { color: #EA4335; }
+    .logo span:nth-child(3) { color: #FBBC05; }
+    .logo span:nth-child(4) { color: #4285F4; }
+    .logo span:nth-child(5) { color: #34A853; }
+    .logo span:nth-child(6) { color: #EA4335; }
+
+    .search-box {
+      margin-top: 30px;
+      width: 550px;
+      max-width: 90vw;
+      height: 45px;
+      border-radius: 25px;
+      border: 1px solid #dcdcdc;
+      padding: 0 20px;
+      font-size: 1.1rem;
+      outline: none;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .search-box:focus {
+      box-shadow: 0 0 5px rgba(66,133,244,0.6);
+    }
+
+    /* --- Messages agressifs --- */
+    .warning {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: red;
+      background: rgba(255,0,0,0.15);
+      padding: 10px 20px;
+      border-radius: 10px;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .warning.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1.05);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="center">
+    <div class="logo">
+      <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+    </div>
+
+    <input type="text" id="search" class="search-box" placeholder="Rechercher sur Google">
+  </div>
+
+  <div id="warning" class="warning">ARRÊTE DE BOUGER LA SOURIS</div>
+
+  <script>
+    // ---------------------------------------------------------
+    // 1. MESSAGES ROUGES QUI POPPENT QUAND TU BOUGES LA SOURIS
+    // ---------------------------------------------------------
+
+    const warning = document.getElementById("warning");
+
+    const messages = [
+      "ARRÊTE DE BOUGER LA SOURIS",
+      "TU VAS OÙ LÀ",
+      "REVIENS ICI IMMÉDIATEMENT",
+      "TU CROIS QUE JE TE VOIS PAS",
+      "ARRÊTE DE FUIR",
+      "POURQUOI TU GLISSES COMME ÇA",
+      "REPOSE CETTE SOURIS",
+      "TU VAS TROP VITE",
+      "CALME-TOI"
+    ];
+
+    let lastMsg = -1;
+    let hideTimeout;
+    let isShowing = false; // empêche le spam
+
+    function randomMessage() {
+      let i;
+      do {
+        i = Math.floor(Math.random() * messages.length);
+      } while (i === lastMsg);
+      lastMsg = i;
+      return messages[i];
+    }
+
+    document.addEventListener("mousemove", () => {
+
+      // Si un message est déjà affiché → on ignore
+      if (isShowing) return;
+
+      isShowing = true;
+      warning.textContent = randomMessage();
+      warning.classList.add("show");
+
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        warning.classList.remove("show");
+        isShowing = false; // autorise un nouveau message
+      }, 2500); // durée d'affichage
+    });
+
+    // ---------------------------------------------------------
+    // 2. BARRE DE RECHERCHE QUI ÉCRIT N’IMPORTE QUOI
+    // ---------------------------------------------------------
+
+    const search = document.getElementById("search");
+
+    const chaosLetters = ["@", "#", "%", "&", "?", "!", "¤", "ø", "µ", "∆", "§", "¶"];
+
+    function corruptChar(ch) {
+      if (Math.random() < 0.4) {
+        return chaosLetters[Math.floor(Math.random() * chaosLetters.length)];
+      }
+      if (Math.random() < 0.2) {
+        return ch + ch;
+      }
+      return ch;
+    }
+
+    search.addEventListener("input", () => {
+      const original = search.value;
+      let corrupted = "";
+
+      for (let i = 0; i < original.length; i++) {
+        corrupted += corruptChar(original[i]);
+      }
+
+      search.value = corrupted;
+    });
+  </script>
+
+</body>
+</html>
