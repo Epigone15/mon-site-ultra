@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>IA inutile 🤖</title>
+
+<style>
+body{
+    font-family: Comic Sans MS, cursive;
+    background: #eef8ff;
+    text-align: center;
+    padding: 50px;
+}
+
+h1{
+    font-size: 2.5em;
+}
+
+input{
+    padding: 10px;
+    font-size: 1.1em;
+    width: 300px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+}
+
+button{
+    padding: 10px 20px;
+    font-size: 1.1em;
+    margin-left: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #4da6ff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover{
+    background: #1a8cff;
+}
+
+#reponse{
+    margin-top: 40px;
+    font-size: 1.5em;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🤖 IA inutile</h1>
+<p>Pose une question, je réponds n’importe quoi.</p>
+
+<input type="text" id="question" placeholder="Pose ta question...">
+<button onclick="repondre()">Demander</button>
+
+<div id="reponse"></div>
+
+<script>
+const reponses = [
+    "banane cosmique 🍌",
+    "42 mais en pire",
+    "je refuse de coopérer",
+    "demande à un pigeon 🐦",
+    "oui mais non",
+    "erreur 418 : je suis une théière",
+    "ça dépend du vent",
+    "clairement un complot",
+    "je pense donc... euh non",
+    "réessaye dans 1000 ans",
+    "c’est la faute de ton wifi",
+    "je dirais… peut-être… ou pas",
+    "le gouvernement cache la vérité",
+    "je suis fatiguée 😴",
+    "ça a aucun sens mec"
+];
+
+function repondre(){
+    const rep = reponses[Math.floor(Math.random() * reponses.length)];
+    document.getElementById("reponse").innerText = rep;
+}
+</script>
+
+</body>
+</html>
