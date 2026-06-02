@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulation de bug</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Faux écran bleu */
+    #bsod {
+      background: #0078d7;
+      color: #fff;
+      flex-direction: column;
+      font-size: 18px;
+    }
+
+    #bsod .emoji {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+
+    #bsod .percent {
+      font-size: 22px;
+      margin: 10px 0 20px;
+    }
+
+    #bsod .small {
+      font-size: 14px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Faux chargement infini */
+    #loading {
+      background: #111;
+      flex-direction: column;
+      display: none;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 6px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #loading-text {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #loading-sub {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* Faux message "Votre navigateur est trop nul" */
+    #browser-bad {
+      background: #202124;
+      display: none;
+      flex-direction: column;
+    }
+
+    #browser-bad-box {
+      background: #303134;
+      padding: 30px 25px;
+      border-radius: 8px;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      text-align: left;
+    }
+
+    #browser-bad-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #browser-bad-msg {
+      font-size: 15px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 4px;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #1a73e8;
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #e8eaed;
+      border: 1px solid #5f6368;
+    }
+
+    .hint {
+      margin-top: 15px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    /* Petit curseur "occupé" pour renforcer l’illusion */
+    body.fake-busy {
+      cursor: progress;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Écran 1 : faux écran bleu -->
+  <div id="bsod" class="screen">
+    <div>
+      <div class="emoji">:(</div>
+      <div>Votre PC a rencontré un problème et doit redémarrer.</div>
+      <div>Nous collectons simplement des informations sur l’erreur, puis nous redémarrerons pour vous.</div>
+      <div class="percent" id="bsod-percent">0% terminé</div>
+      <div class="small">
+        Pour plus d’informations sur ce problème et les solutions possibles, consultez
+        <br>https://www.windows.com/stopcode
+        <br><br>
+        Code d’arrêt : SIMULATED_FAKE_ERROR
+      </div>
+    </div>
+  </div>
+
+  <!-- Écran 2 : faux chargement infini -->
+  <div id="loading" class="screen">
+    <div>
+      <div class="spinner"></div>
+      <div id="loading-text">Chargement en cours…</div>
+      <div id="loading-sub">Veuillez patienter, cela peut prendre un certain temps.</div>
+    </div>
+  </div>
+
+  <!-- Écran 3 : faux message "Votre navigateur est trop nul" -->
+  <div id="browser-bad" class="screen">
+    <div id="browser-bad-box">
+      <div id="browser-bad-title">Votre navigateur est trop nul</div>
+      <div id="browser-bad-msg">
+        Ce site nécessite un navigateur moderne, rapide, beau, intelligent, charismatique et capable de faire le café.
+        <br><br>
+        Malheureusement, le vôtre ne remplit aucun de ces critères.
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="fakeDownload()">Télécharger un vrai navigateur</button>
+        <button class="btn btn-ghost" onclick="fakeRetry()">Réessayer quand même</button>
+      </div>
+      <div class="hint">
+        Astuce : changer de navigateur ne résoudra pas votre personnalité, mais ça peut aider pour ce site.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Étape 1 : faux écran bleu avec progression
+    let percent = 0;
+    const bsodPercent = document.getElementById('bsod-percent');
+    const bsodScreen = document.getElementById('bsod');
+    const loadingScreen = document.getElementById('loading');
+    const browserBadScreen = document.getElementById('browser-bad');
+
+    document.body.classList.add('fake-busy');
+
+    const bsodInterval = setInterval(() => {
+      percent += Math.floor(Math.random() * 7) + 1; // progression pseudo-aléatoire
+      if (percent > 100) percent = 100;
+      bsodPercent.textContent = percent + '% terminé';
+
+      if (percent >= 100) {
+        clearInterval(bsodInterval);
+        // Transition vers le faux chargement
+        setTimeout(() => {
+          bsodScreen.style.display = 'none';
+          loadingScreen.style.display = 'flex';
+          startFakeLoading();
+        }, 800);
+      }
+    }, 400);
+
+    // Étape 2 : faux chargement infini, puis message navigateur nul
+    function startFakeLoading() {
+      let dots = 0;
+      const loadingText = document.getElementById('loading-text');
+      const loadingSub = document.getElementById('loading-sub');
+
+      const dotInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        loadingText.textContent = 'Chargement en cours' + '.'.repeat(dots);
+      }, 500);
+
+      // Après quelques secondes, on "abandonne" et on affiche le message navigateur nul
+      setTimeout(() => {
+        clearInterval(dotInterval);
+        loadingSub.textContent = 'Oups… quelque chose ne tourne pas rond.';
+      }, 5000);
+
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        browserBadScreen.style.display = 'flex';
+        document.body.classList.remove('fake-busy');
+      }, 8000);
+    }
+
+    // Boutons de l’écran "navigateur nul"
+    function fakeDownload() {
+      alert("Téléchargement annulé : votre navigateur est trop nul pour ça aussi.");
+    }
+
+    function fakeRetry() {
+      alert("Réessai échoué : toujours le même navigateur, toujours le même résultat.");
+    }
+  </script>
+</body>
+</html>
