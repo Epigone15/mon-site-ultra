@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,10 +7,15 @@
 <title>Temps Infini Ultimate</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
     font-family:Arial, sans-serif;
     color:white;
+    background:#000;
     overflow:hidden;
     display:flex;
     flex-direction:column;
@@ -22,22 +28,31 @@ body{
 body::before{
     content:"";
     position:fixed;
+    top:0;
+    left:0;
     width:200%;
     height:200%;
-    background:radial-gradient(white 1px, transparent 1px);
+    background:
+        radial-gradient(white 1px, transparent 1px);
     background-size:3px 3px;
     animation:stars 60s linear infinite;
     z-index:-1;
+    opacity:0.7;
 }
 
 @keyframes stars{
-    from{transform:translate(0,0)}
-    to{transform:translate(-500px,-500px)}
+    from{
+        transform:translate(0,0);
+    }
+    to{
+        transform:translate(-500px,-500px);
+    }
 }
 
 /* TIMER */
 #timer{
-    font-size:2em;
+    font-size:2.5rem;
+    font-weight:bold;
     margin-bottom:10px;
 }
 
@@ -46,6 +61,7 @@ body::before{
     font-style:italic;
     opacity:0.8;
     margin-bottom:20px;
+    text-align:center;
 }
 
 /* HOURGLASS */
@@ -56,13 +72,15 @@ body::before{
     display:flex;
     flex-direction:column;
     align-items:center;
+    justify-content:center;
 }
 
 .bulb{
     width:100px;
     height:90px;
     border-radius:50%;
-    background:rgba(255,255,255,0.05);
+    background:rgba(255,255,255,0.08);
+    border:2px solid rgba(255,255,255,0.15);
     box-shadow:inset 0 0 20px rgba(255,255,255,0.2);
 }
 
@@ -74,9 +92,9 @@ body::before{
 }
 
 @keyframes flow{
-    0%{height:0}
-    50%{height:30px}
-    100%{height:0}
+    0%{height:0;}
+    50%{height:30px;}
+    100%{height:0;}
 }
 
 /* WATCH */
@@ -84,31 +102,74 @@ body::before{
     display:none;
     width:220px;
     height:220px;
+    border:8px solid gold;
     border-radius:50%;
     position:relative;
+    background:rgba(255,255,255,0.05);
+    box-shadow:0 0 25px rgba(255,255,255,0.15);
+}
+
+.center-dot{
+    position:absolute;
+    width:12px;
+    height:12px;
+    background:white;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 
 .hand{
     position:absolute;
-    top:50%;
     left:50%;
-    transform-origin:bottom;
-    transform:translate(-50%,-100%);
+    top:50%;
+    transform-origin:bottom center;
 }
 
-.hour{width:6px;height:50px;background:white;}
-.minute{width:4px;height:70px;background:white;}
-.second{width:2px;height:90px;background:red;}
+.hour{
+    width:6px;
+    height:50px;
+    background:white;
+    margin-left:-3px;
+}
 
-/* BUTTONS */
-button, select{
-    margin-top:10px;
-    padding:10px;
+.minute{
+    width:4px;
+    height:70px;
+    background:white;
+    margin-left:-2px;
+}
+
+.second{
+    width:2px;
+    height:90px;
+    background:red;
+    margin-left:-1px;
+}
+
+/* CONTROLS */
+.controls{
+    margin-top:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+button,
+select{
+    padding:10px 15px;
     border:none;
     border-radius:10px;
-    background:#ffffff20;
+    background:rgba(255,255,255,0.15);
     color:white;
+    cursor:pointer;
     backdrop-filter:blur(10px);
+}
+
+option{
+    color:black;
 }
 </style>
 </head>
@@ -119,46 +180,140 @@ button, select{
 <div id="quote">Le temps file…</div>
 
 <div class="hourglass" id="hourglass">
-    <div class="bulb" id="top"></div>
-    <div class="stream" id="stream"></div>
-    <div class="bulb" id="bottom"></div>
+    <div class="bulb"></div>
+    <div class="stream"></div>
+    <div class="bulb"></div>
 </div>
 
 <div class="watch" id="watch">
     <div class="hand hour" id="hour"></div>
     <div class="hand minute" id="minute"></div>
     <div class="hand second" id="second"></div>
+    <div class="center-dot"></div>
 </div>
 
-<button onclick="switchMode()">⏳ / ⌚</button>
+<div class="controls">
+    <button onclick="switchMode()">⏳ / ⌚</button>
 
-<select onchange="changeWatch(this.value)">
-    <option value="gold">💎 Gold</option>
-    <option value="silver">⚪ Silver</option>
-    <option value="dark">🖤 Dark</option>
-</select>
+    <select onchange="changeWatch(this.value)">
+        <option value="gold">💎 Gold</option>
+        <option value="silver">⚪ Silver</option>
+        <option value="dark">🖤 Dark</option>
+    </select>
+</div>
 
 <audio id="sandSound" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b46c3.mp3?filename=sand-falling-110624.mp3">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b46c3.mp3?filename=sand-falling-110624.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-// GET ELEMENTS
+
+// ELEMENTS
 const timer = document.getElementById("timer");
 const quote = document.getElementById("quote");
-const stream = document.getElementById("stream");
 const hourglass = document.getElementById("hourglass");
 const watch = document.getElementById("watch");
-const sandSound = document.getElementById("sandSound");
 
 const hourHand = document.getElementById("hour");
 const minuteHand = document.getElementById("minute");
 const secondHand = document.getElementById("second");
 
-// TIMER
+const sandSound = document.getElementById("sandSound");
+
+// CHRONOMÈTRE
 let elapsed = 0;
-setInterval(()=>{
+
+setInterval(() => {
+
     elapsed++;
-    let h = String(Math.floor(elapsed/3600)).padStart(2,'0');
-    let m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
-    let s = String(elapsed%
+
+    const h = String(Math.floor(elapsed / 3600)).padStart(2, "0");
+    const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
+    const s = String(elapsed % 60).padStart(2, "0");
+
+    timer.textContent = `${h}:${m}:${s}`;
+
+}, 1000);
+
+// CITATIONS
+const quotes = [
+    "Le temps file…",
+    "Chaque seconde compte.",
+    "Le présent est un cadeau.",
+    "Le temps est précieux.",
+    "Profite de chaque instant.",
+    "L'avenir commence maintenant.",
+    "Le temps ne s'arrête jamais."
+];
+
+setInterval(() => {
+
+    quote.textContent =
+        quotes[Math.floor(Math.random() * quotes.length)];
+
+}, 5000);
+
+// BASCULER SABLIER / MONTRE
+function switchMode(){
+
+    if(hourglass.style.display === "none"){
+
+        hourglass.style.display = "flex";
+        watch.style.display = "none";
+
+    }else{
+
+        hourglass.style.display = "none";
+        watch.style.display = "block";
+
+    }
+}
+
+// CHANGER LE STYLE DE LA MONTRE
+function changeWatch(style){
+
+    if(style === "gold"){
+        watch.style.border = "8px solid gold";
+    }
+
+    if(style === "silver"){
+        watch.style.border = "8px solid silver";
+    }
+
+    if(style === "dark"){
+        watch.style.border = "8px solid #333";
+    }
+}
+
+// HORLOGE ANALOGIQUE
+function updateClock(){
+
+    const now = new Date();
+
+    const seconds = now.getSeconds();
+    const minutes = now.getMinutes();
+    const hours = now.getHours();
+
+    secondHand.style.transform =
+        `translate(-50%, -100%) rotate(${seconds * 6}deg)`;
+
+    minuteHand.style.transform =
+        `translate(-50%, -100%) rotate(${minutes * 6}deg)`;
+
+    hourHand.style.transform =
+        `translate(-50%, -100%) rotate(${hours * 30 + minutes * 0.5}deg)`;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+// SON
+document.body.addEventListener("click", () => {
+    sandSound.play().catch(() => {});
+}, { once:true });
+
+</script>
+
+</body>
+</html>
+```
