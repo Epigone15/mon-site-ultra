@@ -46,10 +46,11 @@ h1{
     font-size:clamp(2rem,6vw,4rem);
 }
 
-/* BUTTON */
+/* BUTTONS */
 
 button{
     margin-top:20px;
+    margin-right:10px;
     padding:15px 25px;
     border:none;
     border-radius:999px;
@@ -63,6 +64,25 @@ button{
 button:hover{
     transform:scale(1.1);
     background:#ff3b3b;
+}
+
+.nuclear{
+    background:black;
+    color:#00ff88;
+}
+
+/* SHAKE */
+
+.shake{
+    animation:shake 0.4s;
+}
+
+@keyframes shake{
+    0%{transform:translate(0,0);}
+    25%{transform:translate(10px,-10px);}
+    50%{transform:translate(-10px,10px);}
+    75%{transform:translate(10px,10px);}
+    100%{transform:translate(0,0);}
 }
 
 /* VIDEOS */
@@ -99,6 +119,7 @@ button:hover{
 <header>
     <h1>🦭 BOUNCING SEALS 🦭</h1>
     <button onclick="spawnMass()">MORE SEALS 🦭💥</button>
+    <button class="nuclear" onclick="nuclearSeal()">☢️ NUCLEAR SEAL</button>
 </header>
 
 <div class="container">
@@ -122,11 +143,11 @@ button:hover{
 </div>
 
 <div class="video-wrapper">
-<iframe src="https://www.youtube.com/watch?v=VlTo9Z94XQ0" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/j8Z9eGz8vWk" allowfullscreen></iframe>
 </div>
 
 <div class="video-wrapper">
-<iframe src="https://www.youtube.com/watch?v=-SjPVVeNdKY" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/1uQ6zKzW7j0" allowfullscreen></iframe>
 </div>
 
 </div>
@@ -148,28 +169,40 @@ function createSeal(){
 
     document.body.appendChild(seal);
 
-    // effet bounce random
     let x=0;
     let speed=(Math.random()-0.5)*2;
 
     function move(){
         x+=speed;
-        seal.style.transform=`translate(${x}px, 0px)`;
+        seal.style.transform=`translate(${x}px,0)`;
         requestAnimationFrame(move);
     }
     move();
 }
 
-// spawn normal
+// spawn initial
 for(let i=0;i<30;i++){
     createSeal();
 }
 
-// bouton chaos
+// bouton normal
 function spawnMass(){
     for(let i=0;i<200;i++){
         createSeal();
     }
+}
+
+// ☢️ nucléaire
+function nuclearSeal(){
+
+    document.body.classList.add("shake");
+    setTimeout(()=>document.body.classList.remove("shake"),400);
+
+    for(let i=0;i<1000;i++){
+        setTimeout(createSeal, i*2);
+    }
+
+    alert("☢️ trop de phoques mec ☢️");
 }
 
 </script>
