@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Bouncing Seals 🦭</title>
 
@@ -14,198 +14,82 @@
 }
 
 body{
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family:"Comic Sans MS", cursive;
     background:#eef8ff;
-    color:#222;
     overflow-x:hidden;
+    position:relative;
+}
+
+/* 🦭 BACKGROUND */
+
+.seal{
+    position:fixed;
+    pointer-events:none;
+    animation:float linear infinite;
+}
+
+@keyframes float{
+    0%{transform:translateY(110vh);}
+    100%{transform:translateY(-10vh);}
 }
 
 /* HEADER */
 
 header{
-    background:linear-gradient(-45deg,#ff6b6b,#4ecdc4,#45b7d1,#96ceb4);
-    background-size:400% 400%;
-    animation:bgMove 12s ease infinite;
-    padding:40px 20px;
     text-align:center;
+    padding:40px 20px;
+    background:linear-gradient(45deg,#4ecdc4,#45b7d1);
     color:white;
 }
 
-@keyframes bgMove{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
 h1{
-    font-size:clamp(2rem,7vw,5rem);
-    margin-bottom:20px;
-    word-break:break-word;
-    line-height:1.2;
-}
-
-.subtitle{
-    max-width:800px;
-    margin:auto;
-    font-size:1.2rem;
-    line-height:1.8;
-    white-space:pre-line;
-}
-
-.rabbit{
-    margin-top:25px;
-    font-size:1.4rem;
-    line-height:1.6;
-    white-space:pre;
-}
-
-/* MAIN */
-
-.container{
-    width:100%;
-    max-width:1300px;
-    margin:auto;
-    padding:20px;
-}
-
-.section{
-    background:white;
-    margin:30px 0;
-    padding:25px;
-    border-radius:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.08);
-}
-
-.section h2{
-    color:#ff5f7a;
-    margin-bottom:15px;
-    font-size:clamp(1.6rem,5vw,3rem);
-}
-
-.section p{
-    margin-bottom:20px;
-    line-height:1.7;
-}
-
-/* GRID */
-
-.gallery,
-.gif-container,
-.video-container{
-    display:grid;
-    gap:20px;
-}
-
-.gallery{
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-}
-
-.gif-container{
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-}
-
-.video-container{
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-}
-
-/* MEDIA */
-
-.gallery img,
-.gif-container img{
-    width:100%;
-    height:260px;
-    object-fit:cover;
-    border-radius:16px;
-    transition:0.3s;
-    display:block;
-    background:#ddd;
-}
-
-.gallery img:hover,
-.gif-container img:hover{
-    transform:scale(1.03);
-}
-
-.video-wrapper{
-    position:relative;
-    width:100%;
-    padding-bottom:56.25%;
-    overflow:hidden;
-    border-radius:16px;
-    background:#000;
-}
-
-.video-wrapper iframe{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    border:none;
+    font-size:clamp(2rem,6vw,4rem);
 }
 
 /* BUTTON */
 
-.meme-button{
+button{
+    margin-top:20px;
+    padding:15px 25px;
     border:none;
+    border-radius:999px;
+    font-size:1.2rem;
+    cursor:pointer;
     background:#ff6b6b;
     color:white;
-    padding:15px 25px;
-    border-radius:999px;
-    font-size:1.1rem;
-    cursor:pointer;
-    transition:0.3s;
+    transition:0.2s;
 }
 
-.meme-button:hover{
-    background:#4ecdc4;
-    transform:scale(1.05);
+button:hover{
+    transform:scale(1.1);
+    background:#ff3b3b;
 }
 
-/* MEME */
+/* VIDEOS */
 
-#meme-output img{
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.video-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.video-wrapper{
+    position:relative;
+    padding-bottom:56.25%;
+}
+
+.video-wrapper iframe{
+    position:absolute;
     width:100%;
+    height:100%;
+    border:none;
     border-radius:15px;
-    max-height:500px;
-    object-fit:cover;
-}
-
-/* FOOTER */
-
-footer{
-    background:#222;
-    color:white;
-    text-align:center;
-    padding:40px 20px;
-    margin-top:50px;
-}
-
-footer a{
-    color:#4ecdc4;
-    text-decoration:none;
-}
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-    .section{
-        padding:18px;
-    }
-
-    .gallery img,
-    .gif-container img{
-        height:220px;
-    }
-
-    .subtitle{
-        font-size:1rem;
-    }
-
-    .rabbit{
-        font-size:1rem;
-    }
 }
 </style>
 </head>
@@ -213,141 +97,82 @@ footer a{
 <body>
 
 <header>
-
-    <h1>🦭 Bouncing Seals 🦭</h1>
-
-    <div class="subtitle">
-The bunny has acquired a tiny seal.
-No one knows the mission, but morale is high.
-    </div>
-
-    <div class="rabbit">
-(\___/)
-( •.•)
-/ >🦭
-    </div>
-
+    <h1>🦭 BOUNCING SEALS 🦭</h1>
+    <button onclick="spawnMass()">MORE SEALS 🦭💥</button>
 </header>
 
 <div class="container">
 
-    <!-- VIDEOS -->
+<div class="video-container">
 
-    <section class="section">
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/A4MU5BXPGcw" allowfullscreen></iframe>
+</div>
 
-        <h2>🎥 Vidéos de Phoques</h2>
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/VlTo9Z94XQ0" allowfullscreen></iframe>
+</div>
 
-        <p>
-            Des phoques qui rebondissent, glissent et vivent leur meilleure vie.
-        </p>
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/-SjPVVeNdKY" allowfullscreen></iframe>
+</div>
 
-        <div class="video-container">
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/UmW5d0RBxBc" allowfullscreen></iframe>
+</div>
 
-            <div class="video-wrapper">
-                <iframe
-                    src="https://www.youtube.com/embed/A4MU5BXPGcw"
-                    allowfullscreen>
-                </iframe>
-            </div>
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/j8Z9eGz8vWk" allowfullscreen></iframe>
+</div>
 
-            <div class="video-wrapper">
-                <iframe
-                    src="https://www.youtube.com/embed/UmW5d0RBxBc"
-                    allowfullscreen>
-                </iframe>
-            </div>
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/1uQ6zKzW7j0" allowfullscreen></iframe>
+</div>
 
-            <div class="video-wrapper">
-                <iframe
-                    src="https://www.youtube.com/embed/VlTo9Z94XQ0"
-                    allowfullscreen>
-                </iframe>
-            </div>
+</div>
 
-            <div class="video-wrapper">
-                <iframe
-                    src="https://www.youtube.com/embed/-SjPVVeNdKY"
-                    allowfullscreen>
-                </iframe>
-            </div>
+</div>
 
-        </div>
+<script>
 
-    </section>
+function createSeal(){
+    let seal=document.createElement("div");
+    seal.className="seal";
+    seal.innerHTML="🦭";
 
-    <!-- IMAGES -->
+    seal.style.left=Math.random()*100+"vw";
+    seal.style.fontSize=(1+Math.random()*2)+"rem";
 
-    <section class="section">
+    let duration=5+Math.random()*10;
+    seal.style.animationDuration=duration+"s";
 
-        <h2>🖼️ Phoques en Action</h2>
+    document.body.appendChild(seal);
 
-        <p>
-            Oui, c'est complètement absurde. Oui, c'est incroyable.
-        </p>
+    // effet bounce random
+    let x=0;
+    let speed=(Math.random()-0.5)*2;
 
-        <div class="gallery">
+    function move(){
+        x+=speed;
+        seal.style.transform=`translate(${x}px, 0px)`;
+        requestAnimationFrame(move);
+    }
+    move();
+}
 
-            <img src="https://media.tenor.com/6kYJYx7YAAAAAC/seal-bounce.gif" alt="seal">
+// spawn normal
+for(let i=0;i<30;i++){
+    createSeal();
+}
 
-            <img src="https://media.tenor.com/0AVbKGYhGz4AAAAC/seal.gif" alt="seal">
+// bouton chaos
+function spawnMass(){
+    for(let i=0;i<200;i++){
+        createSeal();
+    }
+}
 
-            <img src="https://media.tenor.com/qkG7k0KQz9AAAAAC/seal-dance.gif" alt="seal">
-
-            <img src="https://media.tenor.com/t0K6hK4AAAAAC/baby-seal.gif" alt="seal">
-
-            <img src="https://media.tenor.com/4D9s7M9n8WAAAAAC/seal-spin.gif" alt="seal">
-
-            <img src="https://media.tenor.com/l8B9P7Jx6VAAAAAC/seal-meme.gif" alt="seal">
-
-        </div>
-
-    </section>
-
-    <!-- GIFS -->
-
-    <section class="section">
-
-        <h2>🎞️ GIFs</h2>
-
-        <p>
-            Spam-les partout.
-        </p>
-
-        <div class="gif-container">
-
-            <img src="https://media.tenor.com/6kYJYx7YAAAAAC/seal-bounce.gif" alt="gif">
-
-            <img src="https://media.tenor.com/0AVbKGYhGz4AAAAC/seal.gif" alt="gif">
-
-            <img src="https://media.tenor.com/qkG7k0KQz9AAAAAC/seal-dance.gif" alt="gif">
-
-            <img src="https://media.tenor.com/t0K6hK4AAAAAC/baby-seal.gif" alt="gif">
-
-            <img src="https://media.tenor.com/4D9s7M9n8WAAAAAC/seal-spin.gif" alt="gif">
-
-            <img src="https://media.tenor.com/l8B9P7Jx6VAAAAAC/seal-meme.gif" alt="gif">
-
-        </div>
-
-    </section>
-
-
-<footer>
-
-    <p>
-        ❤️ Site totalement inutile mais magnifique.
-    </p>
-
-    <br>
-
-    <div class="rabbit">
-(\___/)
-( •.•)
-/ >🦭
-    </div>
-
-</footer>
-
+</script>
 
 </body>
 </html>
