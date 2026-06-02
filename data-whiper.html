@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Car Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #0a0a0f;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .screen {
+        text-align: center;
+    }
+
+    .spinner {
+        margin: 30px auto;
+        width: 60px;
+        height: 60px;
+        border: 6px solid rgba(255,255,255,0.2);
+        border-top-color: #7f5cff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .msg {
+        font-size: 1.1rem;
+        margin-top: 10px;
+        opacity: 0.8;
+    }
+
+    .reveal {
+        margin-top: 20px;
+        font-size: 1.2rem;
+        color: #7fffd4;
+        display: none;
+    }
+</style>
+</head>
+
+<body>
+
+<!-- Écran de chargement (UN SEUL) -->
+<div id="loadingScreen" class="screen">
+    <div class="spinner"></div>
+    <div id="loadingText" class="msg">Initialisation…</div>
+    <div id="finalMessage" class="reveal">effacement des fichiers terminés</div>
+</div>
+
+<script>
+    const messages = [
+        "Connexion au serveur",
+        "Synchronisation avec le serveur",
+        "Suppression des fichiers"
+    ];
+
+    function startFakeLoading() {
+        // Suppression de homeScreen car il n'existe pas
+        document.getElementById("loadingScreen").style.display = "block";
+
+        let i = 0;
+
+        const interval = setInterval(() => {
+            if (i < messages.length) {
+                document.getElementById("loadingText").textContent = messages[i];
+                i++;
+            } else {
+                clearInterval(interval);
+                document.getElementById("loadingText").textContent = "fichiers effacés";
+                document.getElementById("finalMessage").style.display = "block";
+            }
+        }, 1200);
+    }
+
+    // Lancement automatique pour test
+    startFakeLoading();
+</script>
+
+</body>
+</html>
