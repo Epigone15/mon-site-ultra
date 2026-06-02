@@ -25,6 +25,14 @@
       box-sizing: border-box;
     }
 
+    /* Bouton fullscreen */
+    #fullscreen-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+    }
+
     /* Faux écran bleu */
     #bsod {
       background: #0078d7;
@@ -50,11 +58,18 @@
       margin: 0 auto;
     }
 
-    /* Faux chargement infini */
+    /* Faux chargement */
     #loading {
       background: #111;
       flex-direction: column;
       display: none;
+    }
+
+    #loading > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .spinner {
@@ -81,7 +96,7 @@
       opacity: 0.8;
     }
 
-    /* Faux message "Votre navigateur est trop nul" */
+    /* Faux navigateur nul */
     #browser-bad {
       background: #202124;
       display: none;
@@ -139,7 +154,6 @@
       opacity: 0.7;
     }
 
-    /* Petit curseur "occupé" pour renforcer l’illusion */
     body.fake-busy {
       cursor: progress;
     }
@@ -147,7 +161,10 @@
 </head>
 <body>
 
-  <!-- Écran 1 : faux écran bleu -->
+  <!-- Bouton plein écran -->
+  <button id="fullscreen-btn" class="btn btn-ghost">Plein écran</button>
+
+  <!-- Écran bleu -->
   <div id="bsod" class="screen">
     <div>
       <div class="emoji">:(</div>
@@ -155,44 +172,52 @@
       <div>Nous collectons simplement des informations sur l’erreur, puis nous redémarrerons pour vous.</div>
       <div class="percent" id="bsod-percent">0% terminé</div>
       <div class="small">
-        Pour plus d’informations sur ce problème et les solutions possibles, consultez
-        <br>https://www.windows.com/stopcode
+        https://www.windows.com/stopcode
         <br><br>
         Code d’arrêt : SIMULATED_FAKE_ERROR
       </div>
     </div>
   </div>
 
-  <!-- Écran 2 : faux chargement infini -->
+  <!-- Chargement -->
   <div id="loading" class="screen">
     <div>
       <div class="spinner"></div>
       <div id="loading-text">Chargement en cours…</div>
-      <div id="loading-sub">Veuillez patienter, cela peut prendre un certain temps.</div>
+      <div id="loading-sub">Veuillez patienter...</div>
     </div>
   </div>
 
-  <!-- Écran 3 : faux message "Votre navigateur est trop nul" -->
+  <!-- Navigateur nul -->
   <div id="browser-bad" class="screen">
     <div id="browser-bad-box">
       <div id="browser-bad-title">Votre navigateur est trop nul</div>
       <div id="browser-bad-msg">
-        Ce site nécessite un navigateur moderne, rapide, beau, intelligent, charismatique et capable de faire le café.
-        <br><br>
-        Malheureusement, le vôtre ne remplit aucun de ces critères.
+        Ce site nécessite un navigateur moderne, rapide, beau, intelligent et capable de faire le café.
       </div>
       <div class="btn-row">
-        <button class="btn btn-primary" onclick="fakeDownload()">Télécharger un vrai navigateur</button>
-        <button class="btn btn-ghost" onclick="fakeRetry()">Réessayer quand même</button>
+        <button class="btn btn-primary" onclick="fakeDownload()">Télécharger</button>
+        <button class="btn btn-ghost" onclick="fakeRetry()">Réessayer</button>
       </div>
-      <div class="hint">
-        Astuce : changer de navigateur ne résoudra pas votre personnalité, mais ça peut aider pour ce site.
-      </div>
+     
     </div>
   </div>
 
   <script>
-    // Étape 1 : faux écran bleu avec progression
+    // FULLSCREEN
+    const fsBtn = document.getElementById('fullscreen-btn');
+
+    fsBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+        fsBtn.textContent = "Quitter plein écran";
+      } else {
+        document.exitFullscreen();
+        fsBtn.textContent = "Plein écran";
+      }
+    });
+
+    // BSOD
     let percent = 0;
     const bsodPercent = document.getElementById('bsod-percent');
     const bsodScreen = document.getElementById('bsod');
@@ -202,13 +227,12 @@
     document.body.classList.add('fake-busy');
 
     const bsodInterval = setInterval(() => {
-      percent += Math.floor(Math.random() * 7) + 1; // progression pseudo-aléatoire
+      percent += Math.floor(Math.random() * 7) + 1;
       if (percent > 100) percent = 100;
       bsodPercent.textContent = percent + '% terminé';
 
       if (percent >= 100) {
         clearInterval(bsodInterval);
-        // Transition vers le faux chargement
         setTimeout(() => {
           bsodScreen.style.display = 'none';
           loadingScreen.style.display = 'flex';
@@ -216,8 +240,14 @@
         }, 800);
       }
     }, 400);
+    document.addEventListener("fullscreenchange", () => {
+  if (document.fullscreenElement) {
+    fsBtn.style.display = "none";
+  } else {
+    fsBtn.style.display = "block";
+  }
+});
 
-    // Étape 2 : faux chargement infini, puis message navigateur nul
     function startFakeLoading() {
       let dots = 0;
       const loadingText = document.getElementById('loading-text');
@@ -228,7 +258,6 @@
         loadingText.textContent = 'Chargement en cours' + '.'.repeat(dots);
       }, 500);
 
-      // Après quelques secondes, on "abandonne" et on affiche le message navigateur nul
       setTimeout(() => {
         clearInterval(dotInterval);
         loadingSub.textContent = 'Oups… quelque chose ne tourne pas rond.';
@@ -241,14 +270,14 @@
       }, 8000);
     }
 
-    // Boutons de l’écran "navigateur nul"
     function fakeDownload() {
-      alert("Téléchargement annulé : votre navigateur est trop nul pour ça aussi.");
+      alert("Téléchargement échoué 😈");
     }
 
     function fakeRetry() {
-      alert("Réessai échoué : toujours le même navigateur, toujours le même résultat.");
+      alert("Toujours nul 😈");
     }
   </script>
+
 </body>
 </html>
