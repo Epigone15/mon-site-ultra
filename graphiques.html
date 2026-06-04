@@ -3,669 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Géométrie Interactive</title>
+    <title>Graphiques</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="styles.css">
     <style>
+        :root {
+            --bg: #111827;
+            --card: #1f2937;
+            --text: #f9fafb;
+            --primary: #6366f1;
+            --secondary: #10b981;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             padding: 20px;
-            background-color: #f0f0f0;
-            min-height: 100vh; /* Permet le défilement */
         }
-        #container {
-            display: flex;
-            gap: 20px;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        #canvas-container {
-            flex: 1;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        #toolbar {
-            width: 250px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 20px;
-            align-self: flex-start;
-        }
-        canvas {
-            display: block;
-            cursor: crosshair;
-        }
-        button {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        button.active {
-            background: #2E7D32;
-        }
-        select, input {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .color-picker {
-            width: 100%;
-            height: 40px;
-            padding: 0;
-            border: none;
-            cursor: pointer;
-        }
-        #object-list {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 5px;
-        }
-        .object-item {
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-        }
-        .object-item:hover {
-            background: #f5f5f5;
-        }
-        #coordinates {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
-            font-weight: bold;
-            background: #f9f9f9;
-            padding: 8px;
-            border-radius: 4px;
+        
+        h1 {
             text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
         }
-        #status {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #333;
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        button, select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: var(--card);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: var(--primary);
+        }
+        
+        .chart-container {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .data-editor {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+        
+        th {
+            color: #9ca3af;
+        }
+        
+        .remove-btn {
+            color: #ef4444;
+            cursor: pointer;
             font-weight: bold;
+        }
+        
+        #chart {
+            min-height: 400px;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--card);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
-    <h1>Géométrie Interactive</h1>
-    <div id="container">
-        <div id="toolbar">
-            <h3>Outils</h3>
-            <button id="tool-point" class="active">Point</button>
-            <button id="tool-segment">Segment</button>
-            <button id="tool-circle">Cercle</button>
-            <button id="tool-select">Sélectionner</button>
-            <button id="tool-delete">Supprimer</button>
-            <button id="clear-all">Tout effacer</button>
-
-            <h3>Options</h3>
-            <label>
-                <input type="checkbox" id="show-grid" checked> Grille
-            </label>
-            <label>
-                <input type="checkbox" id="show-axes" checked> Axes
-            </label>
-            <label>
-                <input type="checkbox" id="snap-to-grid"> Accroche à la grille
-            </label>
-
-            <h3>Couleur</h3>
-            <input type="color" id="object-color" class="color-picker" value="#ff0000">
-
-            <h3>Objets</h3>
-            <div id="object-list"></div>
-
-            <h3>Statut</h3>
-            <div id="status">Prêt</div>
-            <div id="coordinates">X: 0, Y: 0</div>
-
-            <h3>Actions</h3>
-            <button id="undo">Annuler</button>
-            <button id="redo">Refaire</button>
-            <button id="export">Exporter (JSON)</button>
-            <button id="import">Importer (JSON)</button>
-            <input type="file" id="import-file" style="display: none;" accept=".json">
+    <a href="index.html" class="back-button">← Retour</a>
+    <div class="container">
+        <h1>📊 Graphiques</h1>
+        
+        <div class="controls">
+            <select id="chartType">
+                <option value="bar">Histogramme</option>
+                <option value="line">Courbe</option>
+                <option value="area">Aire</option>
+                <option value="pie">Camembert</option>
+                <option value="donut">Donut</option>
+            </select>
+            <button onclick="updateChart()">Mettre à jour</button>
+            <button onclick="addRow()">+ Ligne</button>
+            <button onclick="exportPNG()">Exporter PNG</button>
+            <button onclick="exportCSV()">Exporter CSV</button>
         </div>
-        <div id="canvas-container">
-            <canvas id="canvas"></canvas>
+        
+        <div class="chart-container">
+            <div id="chart"></div>
+        </div>
+        
+        <div class="data-editor">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Valeur</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">Janvier</td>
+                        <td contenteditable="true">30</td>
+                        <td><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Février</td>
+                        <td contenteditable="true">50</td>
+                        <td><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
+    
     <script>
-        // ========== CONFIG ==========
-        const CANVAS_WIDTH = 800;
-        const CANVAS_HEIGHT = 600;
-        const GRID_SIZE = 20;
-        const SNAP_TOLERANCE = 10; // pixels
-
-        // ========== STATE ==========
-        let canvas, ctx;
-        let objects = [];
-        let selectedObjects = [];
-        let currentTool = 'point';
-        let isDragging = false;
-        let dragObject = null;
-        let dragOffset = { x: 0, y: 0 };
-        let history = [];
-        let historyIndex = -1;
-        let showGrid = true;
-        let showAxes = true;
-        let snapToGrid = false;
-        let objectColor = '#ff0000';
-        let tempPoint = null;
-        let tempSegment = null;
-        let tempCircle = null;
-
-        // ========== INIT ==========
-        function init() {
-            canvas = document.getElementById('canvas');
-            ctx = canvas.getContext('2d');
-            canvas.width = CANVAS_WIDTH;
-            canvas.height = CANVAS_HEIGHT;
-
-            // Bind events
-            canvas.addEventListener('mousedown', onMouseDown);
-            canvas.addEventListener('mousemove', onMouseMove);
-            canvas.addEventListener('mouseup', onMouseUp);
-            canvas.addEventListener('mouseleave', onMouseLeave);
-
-            // Toolbar
-            document.getElementById('tool-point').addEventListener('click', () => setTool('point'));
-            document.getElementById('tool-segment').addEventListener('click', () => setTool('segment'));
-            document.getElementById('tool-circle').addEventListener('click', () => setTool('circle'));
-            document.getElementById('tool-select').addEventListener('click', () => setTool('select'));
-            document.getElementById('tool-delete').addEventListener('click', () => setTool('delete'));
-            document.getElementById('clear-all').addEventListener('click', clearAll);
-            document.getElementById('show-grid').addEventListener('change', (e) => { showGrid = e.target.checked; draw(); });
-            document.getElementById('show-axes').addEventListener('change', (e) => { showAxes = e.target.checked; draw(); });
-            document.getElementById('snap-to-grid').addEventListener('change', (e) => { snapToGrid = e.target.checked; });
-            document.getElementById('object-color').addEventListener('input', (e) => { objectColor = e.target.value; });
-            document.getElementById('undo').addEventListener('click', undo);
-            document.getElementById('redo').addEventListener('click', redo);
-            document.getElementById('export').addEventListener('click', exportData);
-            document.getElementById('import').addEventListener('click', () => document.getElementById('import-file').click());
-            document.getElementById('import-file').addEventListener('change', importData);
-
-            // Initial draw
-            draw();
-            updateObjectList();
-        }
-
-        // ========== TOOLS ==========
-        function setTool(tool) {
-            currentTool = tool;
-            document.querySelectorAll('#toolbar button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tool-${tool}`).classList.add('active');
-            setStatus(`Outil: ${tool}`);
-            tempPoint = null;
-            tempSegment = null;
-            tempCircle = null;
-            draw();
-        }
-
-        // ========== MOUSE EVENTS ==========
-        function onMouseDown(e) {
-            const pos = getMousePos(e);
-            const snappedPos = snapToGrid ? snap(pos) : pos;
-
-            if (currentTool === 'point') {
-                addPoint(snappedPos.x, snappedPos.y);
-                saveToHistory();
-            }
-            else if (currentTool === 'segment') {
-                if (!tempPoint) {
-                    tempPoint = snappedPos;
-                } else {
-                    const start = tempPoint;
-                    const end = snappedPos;
-                    addSegment(start.x, start.y, end.x, end.y);
-                    tempPoint = null;
-                    saveToHistory();
-                }
-            }
-            else if (currentTool === 'circle') {
-                if (!tempPoint) {
-                    tempPoint = snappedPos;
-                } else {
-                    const center = tempPoint;
-                    const radius = Math.sqrt(Math.pow(snappedPos.x - center.x, 2) + Math.pow(snappedPos.y - center.y, 2));
-                    addCircle(center.x, center.y, radius);
-                    tempPoint = null;
-                    saveToHistory();
-                }
-            }
-            else if (currentTool === 'select') {
-                const obj = getObjectAt(pos.x, pos.y);
-                if (obj) {
-                    isDragging = true;
-                    dragObject = obj;
-                    dragOffset = { x: pos.x - obj.x, y: pos.y - obj.y };
-                    selectedObjects = [obj];
-                } else {
-                    selectedObjects = [];
-                }
-                updateObjectList();
-            }
-            else if (currentTool === 'delete') {
-                const obj = getObjectAt(pos.x, pos.y);
-                if (obj) {
-                    removeObject(obj);
-                    saveToHistory();
-                }
-            }
-
-            draw();
-        }
-
-        function onMouseMove(e) {
-            const pos = getMousePos(e);
-            const snappedPos = snapToGrid ? snap(pos) : pos;
-
-            // Update coordinates display
-            document.getElementById('coordinates').textContent = `X: ${Math.round(snappedPos.x)}, Y: ${Math.round(snappedPos.y)}`;
-
-            if (isDragging && dragObject) {
-                dragObject.x = snappedPos.x - dragOffset.x;
-                dragObject.y = snappedPos.y - dragOffset.y;
-                draw();
-            }
-
-            // Draw temp objects
-            if (currentTool === 'segment' && tempPoint) {
-                tempSegment = { start: tempPoint, end: snappedPos };
-                draw();
-            }
-            else if (currentTool === 'circle' && tempPoint) {
-                tempCircle = {
-                    center: tempPoint,
-                    radius: Math.sqrt(Math.pow(snappedPos.x - tempPoint.x, 2) + Math.pow(snappedPos.y - tempPoint.y, 2))
-                };
-                draw();
-            }
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            dragObject = null;
-            tempSegment = null;
-            tempCircle = null;
-            draw();
-        }
-
-        function onMouseLeave() {
-            isDragging = false;
-            dragObject = null;
-        }
-
-        // ========== DRAWING ==========
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw grid
-            if (showGrid) {
-                drawGrid();
-            }
-
-            // Draw axes
-            if (showAxes) {
-                drawAxes();
-            }
-
-            // Draw all objects
-            objects.forEach(obj => {
-                if (obj.type === 'point') {
-                    drawPoint(obj);
-                } else if (obj.type === 'segment') {
-                    drawSegment(obj);
-                } else if (obj.type === 'circle') {
-                    drawCircle(obj);
-                }
+        let chart;
+        
+        function getData() {
+            const rows = document.querySelectorAll("#dataTable tbody tr");
+            const labels = [];
+            const values = [];
+            rows.forEach(row => {
+                labels.push(row.cells[0].textContent);
+                values.push(parseFloat(row.cells[1].textContent) || 0);
             });
-
-            // Draw temp objects
-            if (tempSegment) {
-                ctx.strokeStyle = '#999';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(tempSegment.start.x, tempSegment.start.y);
-                ctx.lineTo(tempSegment.end.x, tempSegment.end.y);
-                ctx.stroke();
-                ctx.setLineDash([]);
+            return { labels, values };
+        }
+        
+        function updateChart() {
+            const { labels, values } = getData();
+            const chartType = document.getElementById("chartType").value;
+            const options = {
+                chart: {
+                    type: chartType,
+                    height: 400,
+                    animations: { enabled: true },
+                    dropShadow: { enabled: true }
+                },
+                series: (chartType === "pie" || chartType === "donut") ? values : [{ name: "Données", data: values }],
+                labels: labels,
+                theme: { mode: 'dark', palette: 'palette1' },
+                plotOptions: {
+                    bar: { distributed: true },
+                    pie: { donut: { labels: { show: chartType === "donut" } } }
+                },
+                dataLabels: { enabled: true },
+                legend: { position: 'bottom' },
+                xaxis: (chartType !== "pie" && chartType !== "donut") ? { categories: labels } : {}
+            };
+            
+            if (chart) {
+                chart.destroy();
             }
-
-            if (tempCircle) {
-                ctx.strokeStyle = '#999';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.arc(tempCircle.center.x, tempCircle.center.y, tempCircle.radius, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-
-            // Highlight selected objects
-            selectedObjects.forEach(obj => {
-                if (obj.type === 'point') {
-                    ctx.fillStyle = 'yellow';
-                    ctx.beginPath();
-                    ctx.arc(obj.x, obj.y, 6, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+            
+            chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        }
+        
+        function addRow() {
+            const tbody = document.querySelector("#dataTable tbody");
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td contenteditable="true">Nouveau</td>
+                <td contenteditable="true">0</td>
+                <td><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+            `;
+            tbody.appendChild(row);
+        }
+        
+        function removeRow(el) {
+            el.closest("tr").remove();
+            updateChart();
+        }
+        
+        function exportPNG() {
+            chart.dataURI().then(({ imgURI }) => {
+                const link = document.createElement("a");
+                link.href = imgURI;
+                link.download = "graphique.png";
+                link.click();
             });
         }
-
-        function drawGrid() {
-            ctx.strokeStyle = '#eee';
-            ctx.lineWidth = 1;
-
-            for (let x = 0; x <= canvas.width; x += GRID_SIZE) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
-            }
-
-            for (let y = 0; y <= canvas.height; y += GRID_SIZE) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-        }
-
-        function drawAxes() {
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-
-            // X axis
-            ctx.beginPath();
-            ctx.moveTo(0, canvas.height / 2);
-            ctx.lineTo(canvas.width, canvas.height / 2);
-            ctx.stroke();
-
-            // Y axis
-            ctx.beginPath();
-            ctx.moveTo(canvas.width / 2, 0);
-            ctx.lineTo(canvas.width / 2, canvas.height);
-            ctx.stroke();
-        }
-
-        function drawPoint(point) {
-            ctx.fillStyle = point.color || objectColor;
-            ctx.beginPath();
-            ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Draw label if exists
-            if (point.label) {
-                ctx.fillStyle = '#000';
-                ctx.font = '12px Arial';
-                ctx.fillText(point.label, point.x + 8, point.y - 8);
-            }
-        }
-
-        function drawSegment(segment) {
-            ctx.strokeStyle = segment.color || objectColor;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(segment.start.x, segment.start.y);
-            ctx.lineTo(segment.end.x, segment.end.y);
-            ctx.stroke();
-        }
-
-        function drawCircle(circle) {
-            ctx.strokeStyle = circle.color || objectColor;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(circle.center.x, circle.center.y, circle.radius, 0, Math.PI * 2);
-            ctx.stroke();
-        }
-
-        // ========== OBJECT MANAGEMENT ==========
-        function addPoint(x, y) {
-            const label = String.fromCharCode(65 + objects.filter(o => o.type === 'point').length);
-            const point = { type: 'point', x, y, label, color: objectColor };
-            objects.push(point);
-            selectedObjects = [point];
-            updateObjectList();
-            setStatus(`Point ${label} ajouté (${Math.round(x)}, ${Math.round(y)})`);
-        }
-
-        function addSegment(x1, y1, x2, y2) {
-            const segment = { type: 'segment', start: { x: x1, y: y1 }, end: { x: x2, y: y2 }, color: objectColor };
-            objects.push(segment);
-            selectedObjects = [segment];
-            updateObjectList();
-            setStatus(`Segment ajouté de (${Math.round(x1)}, ${Math.round(y1)}) à (${Math.round(x2)}, ${Math.round(y2)})`);
-        }
-
-        function addCircle(x, y, radius) {
-            const circle = { type: 'circle', center: { x, y }, radius, color: objectColor };
-            objects.push(circle);
-            selectedObjects = [circle];
-            updateObjectList();
-            setStatus(`Cercle ajouté (centre: ${Math.round(x)}, ${Math.round(y)}, rayon: ${radius.toFixed(1)})`);
-        }
-
-        function removeObject(obj) {
-            const index = objects.indexOf(obj);
-            if (index !== -1) {
-                objects.splice(index, 1);
-                selectedObjects = [];
-                updateObjectList();
-                setStatus(`Objet supprimé`);
-            }
-        }
-
-        function getObjectAt(x, y) {
-            // Check points first (smaller, so higher priority)
-            for (let i = objects.length - 1; i >= 0; i--) {
-                const obj = objects[i];
-                if (obj.type === 'point') {
-                    const dx = x - obj.x;
-                    const dy = y - obj.y;
-                    if (Math.sqrt(dx * dx + dy * dy) <= 10) {
-                        return obj;
-                    }
-                }
-            }
-
-            // Check segments
-            for (let i = objects.length - 1; i >= 0; i--) {
-                const obj = objects[i];
-                if (obj.type === 'segment') {
-                    if (pointOnSegment(x, y, obj.start, obj.end)) {
-                        return obj;
-                    }
-                }
-            }
-
-            // Check circles
-            for (let i = objects.length - 1; i >= 0; i--) {
-                const obj = objects[i];
-                if (obj.type === 'circle') {
-                    const dx = x - obj.center.x;
-                    const dy = y - obj.center.y;
-                    if (Math.abs(Math.sqrt(dx * dx + dy * dy) - obj.radius) <= 5) {
-                        return obj;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        function pointOnSegment(px, py, p1, p2) {
-            const l2 = Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
-            if (l2 === 0) return false;
-
-            let t = ((px - p1.x) * (p2.x - p1.x) + (py - p1.y) * (p2.y - p1.y)) / l2;
-            t = Math.max(0, Math.min(1, t));
-
-            const projection = {
-                x: p1.x + t * (p2.x - p1.x),
-                y: p1.y + t * (p2.y - p1.y)
-            };
-
-            const dx = px - projection.x;
-            const dy = py - projection.y;
-            return Math.sqrt(dx * dx + dy * dy) <= 5;
-        }
-
-        function clearAll() {
-            objects = [];
-            selectedObjects = [];
-            tempPoint = null;
-            tempSegment = null;
-            tempCircle = null;
-            saveToHistory();
-            updateObjectList();
-            setStatus('Tout effacé');
-            draw();
-        }
-
-        // ========== UTILITIES ==========
-        function getMousePos(e) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
-        }
-
-        function snap(pos) {
-            return {
-                x: Math.round(pos.x / GRID_SIZE) * GRID_SIZE,
-                y: Math.round(pos.y / GRID_SIZE) * GRID_SIZE
-            };
-        }
-
-        function setStatus(msg) {
-            document.getElementById('status').textContent = msg;
-        }
-
-        function updateObjectList() {
-            const list = document.getElementById('object-list');
-            list.innerHTML = '';
-
-            objects.forEach((obj, index) => {
-                const item = document.createElement('div');
-                item.className = 'object-item';
-                item.textContent = getObjectDescription(obj);
-                item.addEventListener('click', () => {
-                    selectedObjects = [obj];
-                    draw();
-                });
-                list.appendChild(item);
+        
+        function exportCSV() {
+            const { labels, values } = getData();
+            let csv = "Label,Valeur\n";
+            labels.forEach((label, i) => {
+                csv += `${label},${values[i]}\n`;
             });
-        }
-
-        function getObjectDescription(obj) {
-            if (obj.type === 'point') {
-                return `Point ${obj.label} (${Math.round(obj.x)}, ${Math.round(obj.y)})`;
-            } else if (obj.type === 'segment') {
-                return `Segment (${Math.round(obj.start.x)}, ${Math.round(obj.start.y)}) → (${Math.round(obj.end.x)}, ${Math.round(obj.end.y)})`;
-            } else if (obj.type === 'circle') {
-                return `Cercle (${Math.round(obj.center.x)}, ${Math.round(obj.center.y)}), r=${obj.radius.toFixed(1)}`;
-            }
-            return 'Objet';
-        }
-
-        // ========== HISTORY ==========
-        function saveToHistory() {
-            history = history.slice(0, historyIndex + 1);
-            history.push(JSON.parse(JSON.stringify(objects)));
-            historyIndex++;
-            setStatus(`Action enregistrée (${historyIndex})`);
-        }
-
-        function undo() {
-            if (historyIndex > 0) {
-                historyIndex--;
-                objects = JSON.parse(JSON.stringify(history[historyIndex]));
-                selectedObjects = [];
-                tempPoint = null;
-                tempSegment = null;
-                tempCircle = null;
-                updateObjectList();
-                draw();
-                setStatus(`Annulation (${historyIndex} actions restantes)`);
-            }
-        }
-
-        function redo() {
-            if (historyIndex < history.length - 1) {
-                historyIndex++;
-                objects = JSON.parse(JSON.stringify(history[historyIndex]));
-                selectedObjects = [];
-                tempPoint = null;
-                tempSegment = null;
-                tempCircle = null;
-                updateObjectList();
-                draw();
-                setStatus(`Rétablissement (${historyIndex} actions)`);
-            }
-        }
-
-        // ========== EXPORT/IMPORT ==========
-        function exportData() {
-            const data = JSON.stringify(objects, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
+            const blob = new Blob([csv], { type: "text/csv" });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'geometrie-export.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            setStatus('Export terminé');
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "données.csv";
+            link.click();
         }
-
-        function importData(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const importedObjects = JSON.parse(event.target.result);
-                    if (Array.isArray(importedObjects)) {
-                        objects = importedObjects;
-                        selectedObjects = [];
-                        tempPoint = null;
-                        tempSegment = null;
-                        tempCircle = null;
-                        saveToHistory();
-                        updateObjectList();
-                        draw();
-                        setStatus('Import terminé');
-                    } else {
-                        setStatus('Fichier invalide');
-                    }
-                } catch (err) {
-                    setStatus('Erreur lors de l\'import');
-                }
-            };
-            reader.readAsText(file);
-            e.target.value = '';
-        }
-
-        // ========== START ==========
-        window.onload = init;
+        
+        window.addEventListener("DOMContentLoaded", updateChart);
     </script>
 </body>
 </html>
