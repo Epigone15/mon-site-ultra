@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Simulation de bug</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
   <style>
     html, body {
       margin: 0;
@@ -25,11 +26,11 @@
       box-sizing: border-box;
     }
 
-    /* Bouton fullscreen */
+    /* Bouton plein écran */
     #fullscreen-btn {
       position: fixed;
       top: 15px;
-      right: 15px;
+      right: 70px;
       z-index: 999;
     }
 
@@ -157,9 +158,23 @@
     body.fake-busy {
       cursor: progress;
     }
+
+    /* Bouton maison */
+    .home-button {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid #374151;
+    }
+
+    .home-button:hover {
+      background: #38bdf8;
+      color: black;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Bouton maison -->
+  <a href="index.html" class="home-button">🏠</a>
 
   <!-- Bouton plein écran -->
   <button id="fullscreen-btn" class="btn btn-ghost">Plein écran</button>
@@ -199,7 +214,7 @@
         <button class="btn btn-primary" onclick="fakeDownload()">Télécharger</button>
         <button class="btn btn-ghost" onclick="fakeRetry()">Réessayer</button>
       </div>
-     
+    
     </div>
   </div>
 

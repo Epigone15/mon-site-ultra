@@ -82,10 +82,8 @@
             color: white;
         }
         
-        .back-button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
+        /* Bouton maison */
+        .home-button {
             background: white;
             padding: 8px 15px;
             border-radius: 8px;
@@ -96,14 +94,24 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
         
-        body.dark .back-button {
+        body.dark .home-button {
             background: #2c2c2c;
             color: #66aaff;
+        }
+        
+        .home-button:hover {
+            background: #0078ff;
+            color: white;
+        }
+        
+        body.dark .home-button:hover {
+            background: #66aaff;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-button">← Retour</a>
+    <a href="index.html" class="home-button">🏠</a>
     <div id="toolbar">
         <button id="addNode">Ajouter une bulle</button>
         <input type="color" id="colorPicker" value="#0078ff">

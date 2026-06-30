@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Bouncing Seals 🦭</title>
+<link rel="stylesheet" href="styles.css">
 
 <style>
 *{
@@ -111,14 +112,27 @@ button:hover{
     border:none;
     border-radius:15px;
 }
+
+/* Bouton maison */
+.home-button {
+    background: rgba(255, 255, 255, 0.9);
+    color: #0078ff;
+    border: none;
+}
+
+.home-button:hover {
+    background: #0078ff;
+    color: white;
+}
 </style>
 </head>
 
 <body>
+<a href="index.html" class="home-button">🏠</a>
 
 <header>
     <h1>🦭 BOUNCING SEALS 🦭</h1>
-    <button onclick="spawnMass()">MORE SEALS 🦭💥</button>
+    <button onclick="spawnMass()">MORE SEALS 🦭🐥</button>
     <button class="nuclear" onclick="nuclearSeal()">☢️ NUCLEAR SEAL</button>
 </header>
 
