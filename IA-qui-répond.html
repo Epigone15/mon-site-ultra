@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Fake ChatGPT 💀</title>
+<title>Fake ChatGPT 🤖</title>
+<link rel="stylesheet" href="styles.css">
 
 <style>
 *{
@@ -147,10 +148,32 @@ button{
     0%,80%,100%{ opacity:0; }
     40%{ opacity:1; }
 }
+
+/* Bouton maison */
+.home-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #2a2b32;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid #374151;
+    color: #ececf1;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.home-button:hover {
+    background: #10a37f;
+    color: white;
+}
 </style>
 </head>
 
 <body>
+<a href="index.html" class="home-button">🏠</a>
 
 <div class="sidebar">
     <h2>💬 ChatGPT</h2>
@@ -164,17 +187,17 @@ button{
 
 <div class="topbar">
     <div>Chat</div>
-    <div class="model">GPT-4 💀</div>
+    <div class="model">GPT-4 🤖</div>
 </div>
 
 <div id="chat">
-    <div class="message bot">Salut mec. Pose une question inutile 😎</div>
+    <div class="message bot">Salut mec. Pose une question inutile 😂</div>
 </div>
 
 <div class="input-zone">
     <div class="input-box">
         <input id="question" placeholder="Envoyer un message...">
-        <button onclick="repondre()">➤</button>
+        <button onclick="repondre()">✈️</button>
     </div>
 </div>
 
@@ -202,7 +225,7 @@ const reponses = [
     "je consulte mon avocat",
     "chargement... toujours pas",
     "404 cerveau non trouvé",
-    "la réponse est dans ton cœur 💖 (mais il bug)",
+    "la réponse est dans ton cœur ❤️ (mais il bug)",
     "oui mais seulement le mardi",
     "non mais avec conviction",
     "je lance un dé 🎲 ... résultat : flou",
@@ -210,47 +233,6 @@ const reponses = [
     "je préfère ne pas répondre",
     "c’est une excellente mauvaise question",
     "je dirais oui, mais en non",
-    "le destin hésite encore",
-    "selon mes calculs faux : oui",
-    "hmm laisse-moi improviser… non",
-    "ça dépasse mes compétences inexistantes",
-    "je suis une IA, pas un miracle",
-    "réponse sponsorisée par personne",
-    "clairement une dinguerie",
-    "j’ai demandé à google, il sait pas non plus",
-    "c’est probablement illégal",
-    "je vais faire semblant de savoir : oui",
-    "non mais dans une autre dimension",
-    "peut-être dans un univers parallèle",
-    "attends je reboot 🧠",
-    "erreur critique : logique introuvable",
-    "je pense que oui, mais j’ai tort",
-    "ça sent la mauvaise idée",
-    "je valide à 12%",
-    "je suis confus et toi aussi",
-    "ça dépend si Mercure est rétrograde",
-    "c’est top secret 🔒",
-    "réponse en cours de téléchargement...",
-    "ah… bonne question… suivante",
-    "je pleure intérieurement",
-    "oui mais avec des conséquences",
-    "non mais c’était proche",
-    "je vais ignorer ça",
-    "analyse en cours... abandonnée",
-    "je dirais non, mais avec style",
-    "ça a été décidé au hasard total",
-    "je suis programmé pour dire n’importe quoi",
-    "attends… ah non j’ai oublié",
-    "c’est une théorie intéressante (fausse)",
-    "le doute persiste",
-    "je dirais oui si non",
-    "c’est compliqué… donc non",
-    "je vais dire oui pour voir",
-    "je sens que c’est une mauvaise idée",
-    "aucune idée mais j’assume",
-    "je confirme rien du tout",
-    "oui mais genre vraiment pas",
-    "je suis perdu mec",
     "c’est clairement un piège",
     "je vais dire peut-être et fuir",
     "réponse validée par un hamster 🐹",

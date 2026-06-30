@@ -94,24 +94,10 @@
         #chart {
             min-height: 400px;
         }
-        
-        .back-button {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: var(--card);
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: 1px solid #374151;
-            color: white;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-button">← Retour</a>
+    <a href="index.html" class="home-button">🏠</a>
     <div class="container">
         <h1>📊 Graphiques</h1>
         
@@ -146,12 +132,12 @@
                     <tr>
                         <td contenteditable="true">Janvier</td>
                         <td contenteditable="true">30</td>
-                        <td><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+                        <td><span class="remove-btn" onclick="removeRow(this)">✕</span></td>
                     </tr>
                     <tr>
                         <td contenteditable="true">Février</td>
                         <td contenteditable="true">50</td>
-                        <td><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+                        <td><span class="remove-btn" onclick="removeRow(this)">✕</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -208,7 +194,7 @@
             row.innerHTML = `
                 <td contenteditable="true">Nouveau</td>
                 <td contenteditable="true">0</td>
-                <td><span class="remove-btn" onclick="removeRow(this)">×</span></td>
+                <td><span class="remove-btn" onclick="removeRow(this)">✕</span></td>
             `;
             tbody.appendChild(row);
         }

@@ -1,10 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Temps Infini Ultimate</title>
+<link rel="stylesheet" href="styles.css">
 
 <style>
 *{
@@ -171,10 +171,22 @@ select{
 option{
     color:black;
 }
+
+/* Bouton maison */
+.home-button {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.home-button:hover {
+    background: gold;
+    color: black;
+}
 </style>
 </head>
 
 <body>
+<a href="index.html" class="home-button">🏠</a>
 
 <div id="timer">00:00:00</div>
 <div id="quote">Le temps file…</div>
@@ -316,4 +328,3 @@ document.body.addEventListener("click", () => {
 
 </body>
 </html>
-```
